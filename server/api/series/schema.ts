@@ -16,3 +16,12 @@ export const CreateSerieSchema = z.object({
     released: z.string().max(225).optional(),
     rating: z.string().max(225).optional(),
 })
+
+export const GetSeriesSchema = z.object({
+    status: z.nativeEnum(Status).optional(),
+    type: z.nativeEnum(Type).optional(),
+    postStatus: z.nativeEnum(PostStatus).optional(),
+    userId: z.string().optional(),
+    limit: z.coerce.number().default(10),
+    page: z.coerce.number().default(1),
+})

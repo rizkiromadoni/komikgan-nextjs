@@ -1,7 +1,7 @@
 import { verifyAuth } from "@hono/auth-js";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { CreateSerieSchema } from "./schema";
+import { CreateSerieSchema, GetSeriesSchema } from "./schema";
 import { Role } from "@prisma/client";
 import AuthorizationError from "@/server/exceptions/AuthorizationError";
 import { slugify } from "@/lib/utils";
@@ -24,6 +24,33 @@ const series = new Hono<{ Variables: {
         }
     }
 }}>()
+
+.get("/",
+    zValidator("query", GetSeriesSchema),
+    async (c) => {
+        const query = c.req.valid("query")
+
+        const series = await prisma.serie.findMany({
+            where: {
+                status: query.status,
+                type: query.type,
+                postStatus: query.postStatus,
+                userId: query.userId
+            },
+            take: query.limit,
+            skip: (query.page - 1) * query.limit,
+            include: {
+                user: {
+                    select: {
+                        username: true
+                    }
+                }
+            }
+        })
+
+        return c.json(series)
+    }
+)
 
 .post("/",
     verifyAuth(),

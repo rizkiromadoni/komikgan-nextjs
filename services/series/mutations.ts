@@ -15,7 +15,7 @@ export const useCreateSerie = () => {
       }
 
       return await response.json();
-    },
+    }
   });
 
   return mutation;
