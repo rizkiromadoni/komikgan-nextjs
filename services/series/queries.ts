@@ -40,3 +40,30 @@ export const useGetSeries = (queryParams: GetSeriesProps) => {
 
     return query
 }
+
+type GetSingleSerieProps = {
+    id?: number
+    slug?: string
+}
+
+export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
+    const query = useQuery({
+        queryKey: ["series", queryParams],
+        queryFn: async () => {
+            const response = await api.series.get.$get({
+                query: {
+                    id: queryParams.id?.toString(),
+                    slug: queryParams.slug
+                }
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to get serie")
+            }
+
+            return await response.json()
+        }
+    })
+
+    return query
+}

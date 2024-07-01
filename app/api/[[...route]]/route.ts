@@ -7,7 +7,6 @@ import { authConfig } from '@/auth'
 import series from '@/server/api/series'
 
 const app = new Hono().basePath('/api')
-
 app.use("*", initAuthConfig(() => authConfig as AuthConfig))
 app.use("/auth/*", authHandler())
 
@@ -26,4 +25,5 @@ app.onError((error, c) => {
 
 export const GET = handle(app)
 export const POST = handle(app)
+export const PATCH = handle(app)
 export type AppType = typeof routes

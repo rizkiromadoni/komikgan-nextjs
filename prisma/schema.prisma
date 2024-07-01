@@ -46,7 +46,7 @@ model Serie {
   id            Int     @id @default(autoincrement())
   title         String
   slug          String  @unique
-  description   String
+  description   String  @db.Text
   status        Status
   type          Type
   postStatus    PostStatus

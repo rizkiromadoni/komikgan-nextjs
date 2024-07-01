@@ -364,29 +364,6 @@ const NewSeriesPage = () => {
                             <CoverUpload value={field.value} onChange={field.onChange} />
                           </FormControl>
                         </FormItem>
-                        // <>
-                        //   <Image
-                        //     alt="Product image"
-                        //     className="aspect-square w-full rounded-md object-cover"
-                        //     height="300"
-                        //     src={field.value ? URL.createObjectURL(field.value) : "/no-avatar.jpg"}
-                        //     width="300"
-                        //   />
-                        //   <FormItem>
-                        //     <FormControl>
-                        //       <Input
-                        //         type="file"
-                        //         accept="image/*"
-                        //         defaultValue={field.value}
-                        //         onChange={(e) => {
-                        //           field.onChange(e)
-                        //           console.log(field.value);
-                        //         }}
-                        //       />
-                        //     </FormControl>
-                        //     <FormMessage />
-                        //   </FormItem>
-                        // </>
                       )}
                     />
                   </div>
