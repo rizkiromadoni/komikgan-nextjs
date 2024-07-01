@@ -1,13 +1,20 @@
-import users from '@/server/api/users'
 import { Hono } from 'hono'
-import { HTTPException } from 'hono/http-exception'
+import { authHandler, initAuthConfig, verifyAuth, type AuthConfig } from "@hono/auth-js"
 import { handle } from 'hono/vercel'
+import { HTTPException } from 'hono/http-exception'
+import users from '@/server/api/users'
+import { authConfig } from '@/auth'
+import series from '@/server/api/series'
 
 const app = new Hono().basePath('/api')
 
-const routes = app.route("/users", users)
+app.use("*", initAuthConfig(() => authConfig as AuthConfig))
+app.use("/auth/*", authHandler())
+
+const routes = app.route("/users", users).route("/series", series)
 
 app.onError((error, c) => {
+    console.log(error)
     if (error instanceof HTTPException) {
         return c.json({
             message: error.message

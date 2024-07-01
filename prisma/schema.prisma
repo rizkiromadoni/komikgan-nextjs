@@ -13,6 +13,22 @@ enum Role {
   USER
 }
 
+enum Status {
+  COMPLETED
+  ONGOING
+}
+
+enum Type {
+  MANGA
+  MANHWA
+  MANHUA
+}
+
+enum PostStatus {
+  PUBLISHED
+  DRAFT
+}
+
 model User {
   id       String  @id @default(uuid())
   username String  @unique
@@ -20,6 +36,30 @@ model User {
   password String
   image    String?
   role     Role    @default(USER)
+  series   Serie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Serie {
+  id            Int     @id @default(autoincrement())
+  title         String
+  slug          String  @unique
+  description   String
+  status        Status
+  type          Type
+  postStatus    PostStatus
+  image         String?
+  alternative   String?
+  author        String?
+  artist        String?
+  serialization String?
+  released      String?
+  rating        String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

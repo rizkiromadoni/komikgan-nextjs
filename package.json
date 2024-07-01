@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "^0.34.1",
+    "@hono/auth-js": "^1.0.8",
     "@hono/zod-validator": "^0.2.2",
     "@hookform/resolvers": "^3.6.0",
     "@prisma/client": "^5.16.1",
@@ -23,6 +25,8 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.2.0",
     "hono": "^4.4.9",
     "lucide-react": "^0.399.0",
     "next": "14.2.4",
@@ -39,6 +43,7 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.47.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
