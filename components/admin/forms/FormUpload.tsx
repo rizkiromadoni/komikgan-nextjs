@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
+import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { toBase64 } from "@/lib/utils";
 import Image from "next/image";
 import React from "react";
-import { Input } from "./ui/input";
 
-type CoverUploadProps = {
+type Props = {
   value?: string;
   onChange?: (value?: string) => void;
 };
 
-const CoverUpload = ({ value, onChange }: CoverUploadProps) => {
+const FormUpload: React.FC<Props> = ({ value, onChange }) => {
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -20,17 +21,20 @@ const CoverUpload = ({ value, onChange }: CoverUploadProps) => {
   };
 
   return (
-    <>
+    <FormItem>
       <Image
-        alt="Product image"
+        alt=""
         className="aspect-square w-full rounded-md object-cover"
         height="300"
-        src={value ?? "/no-avatar.jpg"}
+        src={value ?? "/no-image.jpg"}
         width="300"
       />
-      <Input type="file" accept="image/*" onChange={handleChange} />
-    </>
+      <FormControl>
+        <Input type="file" accept="image/*" onChange={handleChange} />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
   );
 };
 
-export default CoverUpload;
+export default FormUpload;

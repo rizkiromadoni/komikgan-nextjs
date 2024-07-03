@@ -1,6 +1,6 @@
 "use client";
 
-import { Book, Home, Newspaper, Settings, Users2, Webhook } from "lucide-react";
+import { Book, Home, Newspaper, Settings, Tags, Users2, Webhook } from "lucide-react";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,11 @@ const items = [
     name: "Chapters",
     href: "/admin/chapters",
     icon: Newspaper,
+  },
+  {
+    name: "Genres",
+    href: "/admin/genres",
+    icon: Tags,
   },
   {
     name: "Users",

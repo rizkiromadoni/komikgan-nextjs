@@ -22,8 +22,10 @@ export const GetSeriesSchema = z.object({
     type: z.nativeEnum(Type).optional(),
     postStatus: z.nativeEnum(PostStatus).optional(),
     userId: z.string().optional(),
-    limit: z.coerce.number().default(10),
-    page: z.coerce.number().default(1),
+    limit: z.coerce.number().optional(),
+    page: z.coerce.number().optional(),
+    sortBy: z.enum(["id", "title", "updatedAt", "createdAt"]).optional(),
+    sort: z.enum(["desc", "asc"]).optional()
 })
 
 export const GetSingleSerieSchema = z.object({

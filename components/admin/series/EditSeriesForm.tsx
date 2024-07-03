@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import CoverUpload from "@/components/CoverUpload";
 import {
   Card,
   CardContent,
@@ -82,8 +81,7 @@ const EditSeriesForm = ({
 
   if (!data) return null;
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     editSerie.mutate({
       param: { id: data.id.toString() },
       json: values
@@ -102,7 +100,7 @@ const EditSeriesForm = ({
     <Form {...form}>
       <form
         className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex items-center gap-4">
           <Button
@@ -110,6 +108,7 @@ const EditSeriesForm = ({
             size="icon"
             className="h-7 w-7"
             onClick={() => router.back()}
+            type="button"
           >
             <ChevronLeft className="h-4 w-4" />
             <span className="sr-only">Back</span>
@@ -118,7 +117,7 @@ const EditSeriesForm = ({
             New Series
           </h1>
           <div className="hidden items-center gap-2 md:ml-auto md:flex">
-            <Button variant="outline" size="sm" onClick={() => router.back()}>
+            <Button variant="outline" size="sm" onClick={() => router.back()} type="button">
               Discard
             </Button>
             <Button size="sm" type="submit">
@@ -367,7 +366,7 @@ const EditSeriesForm = ({
                 </div>
               </CardContent>
             </Card>
-            <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
+            {/* <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
               <CardHeader>
                 <CardTitle>Series Cover</CardTitle>
               </CardHeader>
@@ -389,14 +388,14 @@ const EditSeriesForm = ({
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
         <div className="flex items-center justify-center gap-2 md:hidden">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => router.back()} type="button">
             Discard
           </Button>
-          <Button size="sm">Save Product</Button>
+          <Button size="sm" type="submit">Save Product</Button>
         </div>
       </form>
     </Form>

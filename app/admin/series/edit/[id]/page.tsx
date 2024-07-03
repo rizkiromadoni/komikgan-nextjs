@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import CoverUpload from "@/components/CoverUpload";
 import {
   Card,
   CardContent,
@@ -40,11 +39,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import EditSeriesForm from "@/components/admin/series/EditSeriesForm";
 
-
-
 const EditSeriesPage = ({ params }: { params: {id: number} }) => {
-  const router = useRouter();
-  
   const { data, isLoading } = useGetSingleSeries({ id: params.id })
 
   if (isLoading) return <p>Please wait...</p>

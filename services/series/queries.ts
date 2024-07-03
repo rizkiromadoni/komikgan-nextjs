@@ -1,12 +1,13 @@
 import api from "@/lib/api"
 import { PostStatus, Status, Type } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
-import { InferRequestType, InferResponseType } from "hono"
 
 type GetSeriesProps = {
     status?: Status
     type?: Type
     postStatus?: PostStatus
+    sortBy?: "id" | "title" | "createdAt" | "updatedAt"
+    sort?: "asc" | "desc"
     userId?: string
     limit?: number
     page?: number
@@ -25,6 +26,8 @@ export const useGetSeries = (queryParams: GetSeriesProps) => {
                     type: queryParams.type,
                     postStatus: queryParams.postStatus,
                     userId: queryParams.userId,
+                    sortBy: queryParams.sortBy,
+                    sort: queryParams.sort,
                     limit: limit,
                     page: page
                 }
@@ -35,7 +38,8 @@ export const useGetSeries = (queryParams: GetSeriesProps) => {
             }
 
             return await response.json()
-        }
+        },
+        staleTime: Infinity
     })
 
     return query
@@ -62,7 +66,8 @@ export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
             }
 
             return await response.json()
-        }
+        },
+        staleTime: Infinity
     })
 
     return query

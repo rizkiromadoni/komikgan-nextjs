@@ -60,6 +60,13 @@ const series = new Hono<{
   .get("/", zValidator("query", GetSeriesSchema), async (c) => {
     const query = c.req.valid("query");
 
+    const page = query.page || 1
+    const limit = query.limit || 10
+    const take = limit === 0 ? undefined : limit
+    const skip = (page - 1) * limit ?? 0
+    const sortBy = query.sortBy || "updatedAt"
+    const sort = query.sort || "desc"
+
     const series = await prisma.serie.findMany({
       where: {
         status: query.status,
@@ -67,8 +74,14 @@ const series = new Hono<{
         postStatus: query.postStatus,
         userId: query.userId,
       },
-      take: query.limit,
-      skip: (query.page - 1) * query.limit,
+      orderBy: {
+        updatedAt: sortBy === "updatedAt" ? sort : undefined,
+        createdAt: sortBy === "createdAt" ? sort : undefined,
+        title: sortBy === "title" ? sort : undefined,
+        id: sortBy === "id" ? sort : undefined
+      },
+      take,
+      skip,
       include: {
         user: {
           select: {
@@ -79,7 +92,39 @@ const series = new Hono<{
       },
     });
 
-    return c.json(series);
+    let hasNext = false
+
+    if (series && series.length > 0) {
+      const nextPage = await prisma.serie.findFirst({
+        where: {
+          status: query.status,
+          type: query.type,
+          postStatus: query.postStatus,
+          userId: query.userId,
+        },
+        skip: skip + (take ?? 0),
+        orderBy: {
+          updatedAt: sortBy === "updatedAt" ? sort : undefined,
+          createdAt: sortBy === "createdAt" ? sort : undefined,
+          title: sortBy === "title" ? sort : undefined,
+          id: sortBy === "id" ? sort : undefined
+        },
+      })
+
+      hasNext = nextPage ? true : false
+    }
+
+    const counts = await prisma.serie.count({
+      where: {
+        status: query.status,
+        type: query.type,
+        postStatus: query.postStatus,
+        userId: query.userId,
+      }
+    })
+
+    return c.json({ hasNext, counts, data: series })
+
   })
 
   .post("/", verifyAuth(), zValidator("json", CreateSerieSchema), async (c) => {

@@ -1,42 +1,22 @@
 "use client";
 
-import CoverUpload from "@/components/CoverUpload";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useCreateSerie } from "@/services/series/mutations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostStatus, Status, Type } from "@prisma/client";
-import { ChevronLeft, Upload } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useCreateSerie } from "@/services/series/mutations";
+
+import { Form, FormField } from "@/components/ui/form";
+import FormInput from "@/components/admin/forms/FormInput";
+import FormSelect from "@/components/admin/forms/FormSelect";
+import FormTextarea from "@/components/admin/forms/FormTextarea";
+import AdminCard from "@/components/admin/AdminCard";
+import FormAction from "@/components/admin/forms/FormAction";
+import FormActionMobile from "@/components/admin/forms/FormActionMobile";
+import FormUpload from "@/components/admin/forms/FormUpload";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Series title is required" }).max(225),
@@ -55,7 +35,7 @@ const formSchema = z.object({
 
 const NewSeriesPage = () => {
   const router = useRouter();
-  const createSerie = useCreateSerie()
+  const createSerie = useCreateSerie();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,15 +48,18 @@ const NewSeriesPage = () => {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    createSerie.mutate({ json: data }, {
-      onSuccess: () => {
-        toast.success("Series created")
-        router.push("/admin/series")
-      },
-      onError: (error) => {
-        toast.error(error.message)
+    createSerie.mutate(
+      { json: data },
+      {
+        onSuccess: () => {
+          toast.success("Series created");
+          router.push("/admin/series");
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
       }
-    })
+    );
   };
 
   return (
@@ -86,163 +69,110 @@ const NewSeriesPage = () => {
           className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4"
           onSubmit={form.handleSubmit(handleSubmit)}
         >
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7"
-              onClick={() => router.back()}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
-            </Button>
-            <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              New Series
-            </h1>
-            <div className="hidden items-center gap-2 md:ml-auto md:flex">
-              <Button variant="outline" size="sm" onClick={() => router.back()}>
-                Discard
-              </Button>
-              <Button size="sm" type="submit">
-                Save Product
-              </Button>
-            </div>
-          </div>
+          <FormAction title="New Series"/>
+          
           <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
             <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Series Information</CardTitle>
-                  <CardDescription>
-                    Lipsum dolor sit amet, consectetur adipiscing elit
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4">
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Title</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Boruto: Naruto Next Generations"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-                              className="min-h-32"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Series Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-x-6 gap-y-4 sm:grid-cols-3">
-                    <FormField
-                      control={form.control}
-                      name="alternative"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Alternative</FormLabel>
-                          <FormControl>
-                            <Input placeholder="alternative" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="author"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Author</FormLabel>
-                          <FormControl>
-                            <Input placeholder="author" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="artist"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Artist</FormLabel>
-                          <FormControl>
-                            <Input placeholder="artist" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="serialization"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Serialization</FormLabel>
-                          <FormControl>
-                            <Input placeholder="serialization" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="released"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Released</FormLabel>
-                          <FormControl>
-                            <Input placeholder="released" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="rating"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Rating</FormLabel>
-                          <FormControl>
-                            <Input placeholder="8.24" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
+              <AdminCard title="Series Information">
+                <div className="grid gap-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Title"
+                        placeholder="Boruto: Naruto Next Generations"
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormTextarea
+                        field={field}
+                        label="Description"
+                        placeholder="lorem"
+                        className="min-h-32"
+                      />
+                    )}
+                  />
+                </div>
+              </AdminCard>
+
+              <AdminCard title="Series Details">
+                <div className="grid gap-x-6 gap-y-4 sm:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="alternative"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Alternative"
+                        placeholder="alternative"
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="author"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Author"
+                        placeholder="author"
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="artist"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Artist"
+                        placeholder="artist"
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="serialization"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Serialization"
+                        placeholder="serialization"
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="released"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Released"
+                        placeholder="2024"
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="rating"
+                    render={({ field }) => (
+                      <FormInput
+                        field={field}
+                        label="Rating"
+                        placeholder="8.24"
+                      />
+                    )}
+                  />
+                </div>
+              </AdminCard>
+
+              {/* <Card>
                 <CardHeader>
                   <CardTitle>Series Genre</CardTitle>
                 </CardHeader>
@@ -252,131 +182,80 @@ const NewSeriesPage = () => {
                     <Input type="text" placeholder="genre" />
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
+
             <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-              <Card x-chunk="dashboard-07-chunk-3">
-                <CardHeader>
-                  <CardTitle>Save As</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-3">
-                    <FormField
-                      control={form.control}
-                      name="postStatus"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="DRAFT">Draft</SelectItem>
-                                <SelectItem value="PUBLISHED">
-                                  Published
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card x-chunk="dashboard-07-chunk-3">
-                <CardHeader>
-                  <CardTitle>Series Type</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-6">
-                    <FormField
-                      control={form.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Status</FormLabel>
-                          <FormControl>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="ONGOING">Ongoing</SelectItem>
-                                <SelectItem value="COMPLETED">
-                                  Completed
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="type"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Type</FormLabel>
-                          <FormControl>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="MANGA">Manga</SelectItem>
-                                <SelectItem value="MANHWA">Manhwa</SelectItem>
-                                <SelectItem value="MANHUA">Manhua</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
-                <CardHeader>
-                  <CardTitle>Series Cover</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-2">
-                    <FormField
-                      control={form.control}
-                      name="image"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <CoverUpload value={field.value} onChange={field.onChange} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+              <AdminCard title="Save As">
+                <div className="grid gap-3">
+                  <FormField
+                    control={form.control}
+                    name="postStatus"
+                    render={({ field }) => (
+                      <FormSelect
+                        field={field}
+                        placeholder="Select Status"
+                        items={[
+                          { label: "Draft", value: "DRAFT" },
+                          { label: "Publish", value: "PUBLISHED" },
+                        ]}
+                      />
+                    )}
+                  />
+                </div>
+              </AdminCard>
+
+              <AdminCard title="Series Type">
+                <div className="grid gap-6">
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormSelect
+                        field={field}
+                        label="Status"
+                        placeholder="Select Status"
+                        items={[
+                          { label: "Ongoing", value: "ONGOING" },
+                          { label: "Completed", value: "COMPLETED" },
+                        ]}
+                      />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormSelect
+                        field={field}
+                        label="Type"
+                        placeholder="Select Type"
+                        items={[
+                          { label: "Manga", value: "MANGA" },
+                          { label: "Manhwa", value: "MANHWA" },
+                          { label: "Manhua", value: "MANHUA" },
+                        ]}
+                      />
+                    )}
+                  />
+                </div>
+              </AdminCard>
+
+              <AdminCard title="Series Cover">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="image"
+                    render={({ field }) => (
+                      <FormUpload value={field.value} onChange={field.onChange} />
+                    )}
+                  />
+                </div>
+              </AdminCard>
             </div>
           </div>
-          <div className="flex items-center justify-center gap-2 md:hidden">
-            <Button variant="outline" size="sm">
-              Discard
-            </Button>
-            <Button size="sm">Save Product</Button>
-          </div>
+
+          <FormActionMobile />
         </form>
       </Form>
     </main>
