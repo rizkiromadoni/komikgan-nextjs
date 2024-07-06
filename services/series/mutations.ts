@@ -20,14 +20,15 @@ export const useCreateSerie = () => {
       return await response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["series"] })
+      queryClient.invalidateQueries({ queryKey: ["series", "genres"] })
     }
   });
   
   return mutation;
 };
 
-export const useEditSerie = () => {
+export const useUpdateSerie = () => {
+  const queryClient = useQueryClient()
   const mutation = useMutation<
     InferResponseType<typeof api.series[":id"]["$patch"]>,
     Error,
@@ -41,6 +42,9 @@ export const useEditSerie = () => {
       }
 
       return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["series", "genres"] })
     }
   });
   
@@ -64,7 +68,7 @@ export const useDeleteSerie = () => {
       return await response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["series"] })
+      queryClient.invalidateQueries({ queryKey: ["series", "genres"] })
     }
   });
 

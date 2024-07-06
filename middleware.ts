@@ -8,6 +8,12 @@ export default auth((req) => {
         if (authRoutes.includes(req.nextUrl.pathname)) {
             return NextResponse.redirect(new URL("/", req.url));
         }
+
+        if (req.nextUrl.pathname.startsWith("/admin")) {
+            if (req.auth.user.role === "USER") {
+                return NextResponse.redirect(new URL("/", req.url));
+            }
+        }
     }
 
     if (!req.auth) {

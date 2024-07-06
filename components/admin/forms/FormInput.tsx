@@ -11,6 +11,8 @@ type Props = {
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
   label?: string;
+  autoFocus?: boolean
+  defaultValue?: string
 };
 
 const FormInput: React.FC<Props> = ({
@@ -19,12 +21,14 @@ const FormInput: React.FC<Props> = ({
   placeholder,
   type,
   label,
+  autoFocus,
+  defaultValue
 }) => {
   return (
-    <FormItem>
+    <FormItem className="text-left">
       {label && <FormLabel>{label}</FormLabel>}
       <FormControl>
-        <Input className={className} type={type} placeholder={placeholder} {...field} />
+        <Input className={className} type={type} placeholder={placeholder} {...field} autoFocus={autoFocus} defaultValue={defaultValue}/>
       </FormControl>
       <FormMessage />
     </FormItem>

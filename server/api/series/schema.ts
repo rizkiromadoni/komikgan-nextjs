@@ -15,6 +15,7 @@ export const CreateSerieSchema = z.object({
     serialization: z.string().max(225).optional(),
     released: z.string().max(225).optional(),
     rating: z.string().max(225).optional(),
+    genres: z.array(z.string()).optional(),
 })
 
 export const GetSeriesSchema = z.object({
@@ -51,7 +52,8 @@ export const EditSerieSchema = z.object({
     serialization: z.string().max(225).optional(),
     released: z.string().max(225).optional(),
     rating: z.string().max(225).optional(),
-    userId: z.string().optional()
+    userId: z.string().optional(),
+    genres: z.array(z.string()).optional(),
 })
 
 export const DeleteSerieParams = z.object({

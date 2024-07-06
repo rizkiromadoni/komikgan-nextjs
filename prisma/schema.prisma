@@ -43,10 +43,10 @@ model User {
 }
 
 model Serie {
-  id            Int     @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   title         String
-  slug          String  @unique
-  description   String  @db.Text
+  slug          String     @unique
+  description   String     @db.Text
   status        Status
   type          Type
   postStatus    PostStatus
@@ -59,7 +59,19 @@ model Serie {
   rating        String?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+  genres Genre[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Genre {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  series Serie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

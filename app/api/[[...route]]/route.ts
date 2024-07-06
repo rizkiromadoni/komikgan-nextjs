@@ -5,12 +5,13 @@ import { HTTPException } from 'hono/http-exception'
 import users from '@/server/api/users'
 import { authConfig } from '@/auth'
 import series from '@/server/api/series'
+import genres from '@/server/api/genres'
 
 const app = new Hono().basePath('/api')
 app.use("*", initAuthConfig(() => authConfig as AuthConfig))
 app.use("/auth/*", authHandler())
 
-const routes = app.route("/users", users).route("/series", series)
+const routes = app.route("/users", users).route("/series", series).route("/genres", genres)
 
 app.onError((error, c) => {
     console.log(error)

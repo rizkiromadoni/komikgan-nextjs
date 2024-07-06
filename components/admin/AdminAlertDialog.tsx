@@ -16,15 +16,16 @@ type Props = {
   open: boolean
   onSubmit: () => void;
   onOpenChange: () => void
+  className?: string
 };
 
-const AdminAlertDialog: React.FC<Props> = ({ title, children, open, onOpenChange, onSubmit }) => {
+const AdminAlertDialog: React.FC<Props> = ({ title, children, open, onOpenChange, onSubmit, className }) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className={className}>
             {children}
           </AlertDialogDescription>
         </AlertDialogHeader>

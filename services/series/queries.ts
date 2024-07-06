@@ -13,21 +13,21 @@ type GetSeriesProps = {
     page?: number
 }
 
-export const useGetSeries = (queryParams: GetSeriesProps) => {
-    const query = useQuery({
-        queryKey: ["series"],
+export const useGetSeries = (args: GetSeriesProps) => {
+    return useQuery({
+        queryKey: ["series", {...args}],
         queryFn: async () => {
-            const limit = (queryParams.limit ? queryParams.limit : 10).toString()
-            const page = (queryParams.page ? queryParams.page : 1).toString()
+            const limit = (args.limit ? args.limit : 10).toString()
+            const page = (args.page ? args.page : 1).toString()
 
             const response = await api.series.$get({
                 query: {
-                    status: queryParams.status,
-                    type: queryParams.type,
-                    postStatus: queryParams.postStatus,
-                    userId: queryParams.userId,
-                    sortBy: queryParams.sortBy,
-                    sort: queryParams.sort,
+                    status: args.status,
+                    type: args.type,
+                    postStatus: args.postStatus,
+                    userId: args.userId,
+                    sortBy: args.sortBy,
+                    sort: args.sort,
                     limit: limit,
                     page: page
                 }
@@ -41,8 +41,6 @@ export const useGetSeries = (queryParams: GetSeriesProps) => {
         },
         staleTime: Infinity
     })
-
-    return query
 }
 
 type GetSingleSerieProps = {
@@ -52,7 +50,7 @@ type GetSingleSerieProps = {
 
 export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
     const query = useQuery({
-        queryKey: ["series", queryParams],
+        queryKey: ["series", {...queryParams}],
         queryFn: async () => {
             const response = await api.series.get.$get({
                 query: {

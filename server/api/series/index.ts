@@ -51,6 +51,7 @@ const series = new Hono<{
             username: true,
           },
         },
+        genres: true
       },
     });
 
@@ -168,6 +169,12 @@ const series = new Hono<{
         slug,
         image,
         userId: session.user.id,
+        genres: {
+          connectOrCreate: payload.genres?.map((genre) => ({
+            where: { slug: slugify(genre)},
+            create: { name: genre, slug: slugify(genre) },
+          }))
+        },
       },
     });
 
@@ -196,7 +203,7 @@ const series = new Hono<{
         throw new AuthorizationError("You dont have access to this resource");
       }
 
-      const serie = await prisma.serie.findUnique({ where: { id } });
+      const serie = await prisma.serie.findUnique({ where: { id }, include: { genres: true } });
       if (!serie) {
         throw new InvariantError("Serie not found");
       }
@@ -238,6 +245,15 @@ const series = new Hono<{
         }
       }
 
+      await prisma.serie.update({
+        where: { id },
+        data: {
+          genres: {
+            disconnect: serie.genres.map((genre) => ({ id: genre.id })),
+          }
+        }
+      })
+
       const updatedSerie = await prisma.serie.update({
         where: { id },
         data: {
@@ -245,6 +261,12 @@ const series = new Hono<{
           title,
           slug,
           image,
+          genres: {
+            connectOrCreate: data.genres?.map((genre) => ({
+              where: { slug: slugify(genre)},
+              create: { name: genre, slug: slugify(genre) },
+            }))
+          },
         },
       });
 
