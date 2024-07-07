@@ -16,6 +16,7 @@ import prisma from "@/lib/prisma";
 import InvariantError from "@/server/exceptions/InvariantError";
 import fs from "fs-extra";
 import path from "path";
+import NotFoundError from "@/server/exceptions/NotFoundError";
 
 const series = new Hono<{
   Variables: {
@@ -51,9 +52,25 @@ const series = new Hono<{
             username: true,
           },
         },
-        genres: true
+        genres: true,
+        chapters: {
+          where: {
+            postStatus: "PUBLISHED"
+          },
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            chapterNumber: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        }
       },
     });
+    if (!serie) {
+      throw new NotFoundError("Serie not Found")
+    }
 
     return c.json(serie);
   })
@@ -67,6 +84,7 @@ const series = new Hono<{
     const skip = (page - 1) * limit ?? 0
     const sortBy = query.sortBy || "updatedAt"
     const sort = query.sort || "desc"
+    const search = query.search
 
     const series = await prisma.serie.findMany({
       where: {
@@ -74,6 +92,10 @@ const series = new Hono<{
         type: query.type,
         postStatus: query.postStatus,
         userId: query.userId,
+        title: {
+          contains: search,
+          mode: "insensitive",
+        },
       },
       orderBy: {
         updatedAt: sortBy === "updatedAt" ? sort : undefined,
@@ -102,6 +124,10 @@ const series = new Hono<{
           type: query.type,
           postStatus: query.postStatus,
           userId: query.userId,
+          title: {
+            contains: search,
+            mode: "insensitive",
+          },
         },
         skip: skip + (take ?? 0),
         orderBy: {
@@ -121,6 +147,10 @@ const series = new Hono<{
         type: query.type,
         postStatus: query.postStatus,
         userId: query.userId,
+        title: {
+          contains: search,
+          mode: "insensitive",
+        },
       }
     })
 

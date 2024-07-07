@@ -6,6 +6,9 @@ const nextConfig = {
                 hostname: "localhost",
             },
         ],
+    },
+    experimental: {
+        missingSuspenseWithCSRBailout: false
     }
 };
 

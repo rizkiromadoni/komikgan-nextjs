@@ -4,9 +4,9 @@ import { useGetSingleSeries } from "@/services/series/queries";
 import SeriesForm from "@/components/admin/forms/SeriesForm";
 
 const EditSeriesPage = ({ params }: { params: {id: number} }) => {
-  const { data, isLoading } = useGetSingleSeries({ id: params.id })
+  const { data, isPending } = useGetSingleSeries({ id: params.id })
 
-  if (isLoading) return <p>Please wait...</p>
+  if (isPending) return <p>Please wait...</p>
   if (!data) return <p>Series not found</p>
 
   return (

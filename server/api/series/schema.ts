@@ -26,7 +26,8 @@ export const GetSeriesSchema = z.object({
     limit: z.coerce.number().optional(),
     page: z.coerce.number().optional(),
     sortBy: z.enum(["id", "title", "updatedAt", "createdAt"]).optional(),
-    sort: z.enum(["desc", "asc"]).optional()
+    sort: z.enum(["desc", "asc"]).optional(),
+    search: z.string().optional()
 })
 
 export const GetSingleSerieSchema = z.object({

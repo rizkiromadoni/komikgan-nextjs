@@ -1,11 +1,8 @@
 import api from "@/lib/api"
-import prisma from "@/lib/prisma"
-import { PostStatus, Status, Type } from "@prisma/client"
+import { PostStatus } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 
-type GetSeriesProps = {
-    status?: Status
-    type?: Type
+type GetChaptersProps = {
     postStatus?: PostStatus
     sortBy?: "id" | "title" | "createdAt" | "updatedAt"
     sort?: "asc" | "desc"
@@ -15,17 +12,15 @@ type GetSeriesProps = {
     search?: string
 }
 
-export const useGetSeries = (args: GetSeriesProps) => {
+export const useGetChapters = (args: GetChaptersProps) => {
     return useQuery({
-        queryKey: ["series", {...args}],
+        queryKey: ["chapters", {...args}],
         queryFn: async () => {
             const limit = (args.limit ? args.limit : 10).toString()
             const page = (args.page ? args.page : 1).toString()
 
-            const response = await api.series.$get({
+            const response = await api.chapters.$get({
                 query: {
-                    status: args.status,
-                    type: args.type,
                     postStatus: args.postStatus,
                     userId: args.userId,
                     sortBy: args.sortBy,
@@ -37,7 +32,7 @@ export const useGetSeries = (args: GetSeriesProps) => {
             })
 
             if (!response.ok) {
-                throw new Error("Failed to get series")
+                throw new Error("Failed to get chapters")
             }
 
             return await response.json()
@@ -46,30 +41,29 @@ export const useGetSeries = (args: GetSeriesProps) => {
     })
 }
 
-type GetSingleSerieProps = {
+type GetSingleChapterProps = {
     id?: number
     slug?: string
 }
 
-export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
-    const query = useQuery({
-        queryKey: ["series", {...queryParams}],
+export const useGetSingleChapter = (args: GetSingleChapterProps) => {
+    return useQuery({
+        queryKey: ["chapters", {...args}],
         queryFn: async () => {
-            const response = await api.series.get.$get({
+            const response = await api.chapters.get.$get({
                 query: {
-                    id: queryParams.id?.toString(),
-                    slug: queryParams.slug
+                    id: args.id?.toString(),
+                    slug: args.slug
                 }
             })
 
             if (!response.ok) {
-                throw new Error("Failed to get serie")
+                const { message } = await response.json() as any
+                throw new Error(message)
             }
 
             return await response.json()
         },
         staleTime: Infinity
     })
-
-    return query
 }

@@ -10,9 +10,10 @@ type Props = {
   field?: ControllerRenderProps<any>;
   placeholder?: string;
   label?: string;
+  defaultValue?: string;
 };
 
-const FormTextarea: React.FC<Props> = ({ className, field, placeholder, label }) => {
+const FormTextarea: React.FC<Props> = ({ className, field, placeholder, label, defaultValue }) => {
   return (
     <FormItem>
       {label && <FormLabel>{label}</FormLabel>}
@@ -21,6 +22,7 @@ const FormTextarea: React.FC<Props> = ({ className, field, placeholder, label })
           placeholder={placeholder}
           className={className}
           {...field}
+          defaultValue={defaultValue}
         />
       </FormControl>
       <FormMessage />
