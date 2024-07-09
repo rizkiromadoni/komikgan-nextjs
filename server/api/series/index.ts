@@ -112,6 +112,20 @@ const series = new Hono<{
             username: true,
           },
         },
+        chapters: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            chapterNumber: true,
+            createdAt: true,
+            updatedAt: true
+          },
+          take: 3,
+          orderBy: {
+            updatedAt: "desc"
+          }
+        }
       },
     });
 

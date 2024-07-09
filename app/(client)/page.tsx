@@ -1,11 +1,13 @@
-import { auth } from '@/auth'
-import React from 'react'
+import LatestUpdate from "@/components/LatestUpdate"
+import { Suspense } from "react"
 
-const HomePage = async () => {
-  const session = await auth()
-
+const HomePage = () => {
   return (
-    <div>{session?.user?.email}</div>
+    <main className="max-w-5xl mx-auto">
+      <Suspense>
+        <LatestUpdate />
+      </Suspense>
+    </main>
   )
 }
 
