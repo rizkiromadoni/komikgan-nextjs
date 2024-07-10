@@ -12,7 +12,7 @@ const SeriesPage = () => {
   if (!data) return <p>There are no series yet.</p>
 
   return (
-    <main className="max-w-5xl mx-auto p-2 antialiased">
+    <main className="max-w-5xl mx-auto p-2">
       <h2 className="w-full py-4 text-2xl font-semibold text-left">
         <span className="text-[#3453d1]">Manga</span> List
       </h2>

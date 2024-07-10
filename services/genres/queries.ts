@@ -24,3 +24,14 @@ export const useGetGenres = (args: {
     staleTime: Infinity,
   });
 };
+
+export const useGetAllGenres = () => {
+  return useQuery({
+    queryKey: ["genres"],
+    queryFn: async () => {
+      const response = await api.genres.all.$get();
+      return await response.json();
+    },
+    staleTime: Infinity,
+  });
+}

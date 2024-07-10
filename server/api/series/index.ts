@@ -111,6 +111,11 @@ const series = new Hono<{
           contains: search,
           mode: "insensitive",
         },
+        genres: {
+          some: {
+            slug: query.genre
+          }
+        }
       },
       orderBy: {
         updatedAt: sortBy === "updatedAt" ? sort : undefined,
@@ -157,6 +162,11 @@ const series = new Hono<{
             contains: search,
             mode: "insensitive",
           },
+          genres: {
+            some: {
+              slug: query.genre
+            }
+          }
         },
         skip: skip + (take ?? 0),
         orderBy: {
@@ -180,6 +190,11 @@ const series = new Hono<{
           contains: search,
           mode: "insensitive",
         },
+        genres: {
+          some: {
+            slug: query.genre
+          }
+        }
       }
     })
 
