@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(titillium.className, "min-h-screen antialiased")}>
+      <body className={cn(titillium.className, "min-h-screen antialiased scroll-smooth")}>
         <SessionProvider>
           <QueryProvider>
             <TooltipProvider>

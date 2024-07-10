@@ -14,6 +14,22 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
+import Link from "next/link";
+
+const routes = [
+  {
+    url: "/series",
+    label: "Manga List",
+  },
+  {
+    url: "/genres",
+    label: "Genre List",
+  },
+  {
+    url: "#",
+    label: "Bookmarks",
+  },
+];
 
 const Header = () => {
   const { data: session, status } = useSession();
@@ -42,21 +58,16 @@ const Header = () => {
               </h1>
             </a>
             <ul className="hidden md:flex gap-2 ml-5">
-              <li>
-                <a className="bg-[#45475a] text-[#9ca9b9] rounded-md px-[15px] py-[8px] text-[16px] font-semibold tracking-wide cursor-pointer hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors">
-                  Manga List
-                </a>
-              </li>
-              <li>
-                <a className="bg-[#45475a] text-[#9ca9b9] rounded-md px-[15px] py-[8px] text-[16px] font-semibold tracking-wide cursor-pointer hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors">
-                  Genre List
-                </a>
-              </li>
-              <li>
-                <a className="bg-[#45475a] text-[#9ca9b9] rounded-md px-[15px] py-[8px] text-[16px] font-semibold tracking-wide cursor-pointer hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors">
-                  Bookmark
-                </a>
-              </li>
+              {routes.map((route) => (
+                <li key={route.label}>
+                  <Link
+                    href={route.url}
+                    className="bg-[#45475a] text-[#9ca9b9] rounded-md px-[15px] py-[8px] text-[16px] font-semibold tracking-wide cursor-pointer hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors"
+                  >
+                    {route.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="flex">
@@ -173,24 +184,15 @@ const Header = () => {
           (isMenuOpen ? "" : " -translate-y-[100%]")
         }
       >
-        <a
-          href="#"
-          className="mx-[10px] px-[15px] py-[8px] bg-[#45475a] text-[#9ca9b9] rounded-md font-semibold text-[16px] tracking-wide hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors"
-        >
-          Manga List
-        </a>
-        <a
-          href="#"
-          className="mx-[10px] px-[15px] py-[8px] bg-[#45475a] text-[#9ca9b9] rounded-md font-semibold text-[16px] tracking-wide hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors"
-        >
-          Genre List
-        </a>
-        <a
-          href="#"
-          className="mx-[10px] px-[15px] py-[8px] bg-[#45475a] text-[#9ca9b9] rounded-md font-semibold text-[16px] tracking-wide hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors"
-        >
-          Bookmark
-        </a>
+        {routes.map((route) => (
+          <Link
+            href={route.url}
+            key={route.label}
+            className="mx-[10px] px-[15px] py-[8px] bg-[#45475a] text-[#9ca9b9] rounded-md font-semibold text-[16px] tracking-wide hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors"
+          >
+            {route.label}
+          </Link>
+        ))}
       </div>
 
       {/* mobile search */}

@@ -76,6 +76,26 @@ const genres = new Hono<{
     }
 )
 
+.get("/all", async (c) => {
+  const genres = await prisma.genre.findMany({
+    orderBy: {
+      name: "asc",
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      _count: {
+        select: {
+          series: true
+        }
+      }
+    }
+  });
+
+  return c.json(genres)
+})
+
 .post("/",
   verifyAuth(),
   zValidator("json", CreateGenreSchema),

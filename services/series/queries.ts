@@ -73,3 +73,17 @@ export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
 
     return query
 }
+
+export const useGetAllSeries = () => {
+    return useQuery({
+        queryKey: ["series"],
+        queryFn: async () => {
+            const response = await api.series.all.$get()
+            if (!response.ok) {
+                throw new Error("Failed to get series")
+            }
+            return await response.json()
+        },
+        staleTime: Infinity
+    })
+}

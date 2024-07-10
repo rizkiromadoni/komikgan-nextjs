@@ -75,6 +75,21 @@ const series = new Hono<{
     return c.json(serie);
   })
 
+  .get("/all", async (c) => {
+    const series = await prisma.serie.findMany({
+      where: {
+        postStatus: "PUBLISHED"
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true
+      }
+    })
+
+    return c.json(series)
+  })
+
   .get("/", zValidator("query", GetSeriesSchema), async (c) => {
     const query = c.req.valid("query");
 
