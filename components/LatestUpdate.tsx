@@ -2,8 +2,9 @@
 
 import { useGetSeries } from "@/services/series/queries";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SeriesList from "./SeriesList";
+import SeriesPagination from "./SeriesPagination";
 
 const LatestUpdate = () => {
   const searchParams = useSearchParams();
@@ -11,12 +12,23 @@ const LatestUpdate = () => {
     Number(searchParams.get("page")) || 1
   );
 
+  useEffect(() => {
+    const page = searchParams.get("page");
+    if (page && Number(page) !== currentPage) {
+      setCurrentPage(Number(page));
+    }
+  }, [searchParams, currentPage]);
+
   const { data, isPending } = useGetSeries({
     limit: 10,
     page: currentPage,
     sortBy: "updatedAt",
     sort: "desc",
   });
+
+  if (!data) {
+    return null;
+  }
   
   return (
     <div className="m-2">
@@ -29,7 +41,12 @@ const LatestUpdate = () => {
         <div className="w-full flex justify-center items-center">
             Please wait...
         </div>
-      ): <SeriesList data={data} />}
+      ): (
+        <div className="flex flex-col justify-center gap-10">
+          <SeriesList data={data} />
+          <SeriesPagination hasNext={data.hasNext} />
+        </div>
+      )}
     </div>
   );
 };

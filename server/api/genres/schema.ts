@@ -7,6 +7,10 @@ export const GetGenresSchema = z.object({
     sort: z.enum(["desc", "asc"]).optional()
 })
 
+export const GetSingleGenreSchema = z.object({
+    slug: z.string(),
+})
+
 export const CreateGenreSchema = z.object({
     name: z.string().min(1)
 })

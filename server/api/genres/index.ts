@@ -1,12 +1,20 @@
 import { zValidator } from "@hono/zod-validator";
 import { Role } from "@prisma/client";
 import { Hono } from "hono";
-import { CreateGenreSchema, DeleteGenreParams, EditGenreParams, EditGenreSchema, GetGenresSchema } from "./schema";
+import {
+  CreateGenreSchema,
+  DeleteGenreParams,
+  EditGenreParams,
+  EditGenreSchema,
+  GetGenresSchema,
+  GetSingleGenreSchema,
+} from "./schema";
 import prisma from "@/lib/prisma";
 import { verifyAuth } from "@hono/auth-js";
 import AuthorizationError from "@/server/exceptions/AuthorizationError";
 import InvariantError from "@/server/exceptions/InvariantError";
 import { slugify } from "@/lib/utils";
+import NotFoundError from "@/server/exceptions/NotFoundError";
 
 const genres = new Hono<{
   Variables: {
@@ -24,83 +32,86 @@ const genres = new Hono<{
   };
 }>()
 
-.get("/",
-    zValidator("query", GetGenresSchema),
-    async (c) => {
-        const query = c.req.valid("query");
+  .get("/", zValidator("query", GetGenresSchema), async (c) => {
+    const query = c.req.valid("query");
 
-        const page = query.page || 1
-        const limit = query.limit || 10
-        const take = limit === 0 ? undefined : limit
-        const skip = (page - 1) * limit ?? 0
-        const sortBy = query.sortBy || "id"
-        const sort = query.sort || "desc"
+    const page = query.page || 1;
+    const limit = query.limit || 10;
+    const take = limit === 0 ? undefined : limit;
+    const skip = (page - 1) * limit ?? 0;
+    const sortBy = query.sortBy || "id";
+    const sort = query.sort || "desc";
 
-        const genres = await prisma.genre.findMany({
-            orderBy: {
-                updatedAt: sortBy === "updatedAt" ? sort : undefined,
-                createdAt: sortBy === "createdAt" ? sort : undefined,
-                name: sortBy === "name" ? sort : undefined,
-                id: sortBy === "id" ? sort : undefined
-            },
-            take,
-            skip,
-            include: {
-                _count: {
-                    select: {
-                        series: true
-                    }
-                }
-            }
-        })
-        
-        const counts = await prisma.genre.count()
+    const genres = await prisma.genre.findMany({
+      orderBy: {
+        updatedAt: sortBy === "updatedAt" ? sort : undefined,
+        createdAt: sortBy === "createdAt" ? sort : undefined,
+        name: sortBy === "name" ? sort : undefined,
+        id: sortBy === "id" ? sort : undefined,
+      },
+      take,
+      skip,
+      include: {
+        _count: {
+          select: {
+            series: true,
+          },
+        },
+      },
+    });
 
-        let hasNext = false
+    const counts = await prisma.genre.count();
 
-        if (genres && genres.length > 0) {
-            const nextPage = await prisma.genre.findFirst({
-                skip: skip + (take ?? 0),
-                orderBy: {
-                    updatedAt: sortBy === "updatedAt" ? sort : undefined,
-                    createdAt: sortBy === "createdAt" ? sort : undefined,
-                    name: sortBy === "name" ? sort : undefined,
-                    id: sortBy === "id" ? sort : undefined
-                },
-            })
+    let hasNext = false;
 
-            hasNext = nextPage ? true : false
-        }
+    if (genres && genres.length > 0) {
+      const nextPage = await prisma.genre.findFirst({
+        skip: skip + (take ?? 0),
+        orderBy: {
+          updatedAt: sortBy === "updatedAt" ? sort : undefined,
+          createdAt: sortBy === "createdAt" ? sort : undefined,
+          name: sortBy === "name" ? sort : undefined,
+          id: sortBy === "id" ? sort : undefined,
+        },
+      });
 
-        return c.json({ counts, hasNext, data: genres })
+      hasNext = nextPage ? true : false;
     }
-)
 
-.get("/all", async (c) => {
-  const genres = await prisma.genre.findMany({
-    orderBy: {
-      name: "asc",
-    },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      _count: {
-        select: {
-          series: true
-        }
-      }
-    }
-  });
+    return c.json({ counts, hasNext, data: genres });
+  })
 
-  return c.json(genres)
-})
+  .get("/get", zValidator("query", GetSingleGenreSchema), async (c) => {
+    const { slug } = c.req.valid("query");
 
-.post("/",
-  verifyAuth(),
-  zValidator("json", CreateGenreSchema),
-  async (c) => {
-    const { session } = c.get("authUser")
+    const genre = await prisma.genre.findFirst({ where: { slug }})
+    if (!genre) throw new NotFoundError("Genre not found.")
+
+    return c.json(genre)
+  })
+
+  .get("/all", async (c) => {
+    const genres = await prisma.genre.findMany({
+      orderBy: {
+        name: "asc",
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        _count: {
+          select: {
+            series: true,
+          },
+        },
+      },
+    });
+
+    return c.json(genres);
+  })
+
+  .post("/", verifyAuth(), zValidator("json", CreateGenreSchema), async (c) => {
+    const { session } = c.get("authUser");
     const { name } = c.req.valid("json");
 
     if (session.user.role === "USER") {
@@ -119,19 +130,19 @@ const genres = new Hono<{
     const newGenre = await prisma.genre.create({
       data: {
         name,
-        slug
-      }
-    })
+        slug,
+      },
+    });
 
-    return c.json(newGenre)
-  }
-)
-.patch("/:id", 
-  verifyAuth(),
-  zValidator("param", EditGenreParams),
-  zValidator("json", EditGenreSchema),
-  async (c) => {
-    const { session } = c.get("authUser");
+    return c.json(newGenre);
+  })
+  .patch(
+    "/:id",
+    verifyAuth(),
+    zValidator("param", EditGenreParams),
+    zValidator("json", EditGenreSchema),
+    async (c) => {
+      const { session } = c.get("authUser");
       const { id } = c.req.valid("param");
       const { name } = c.req.valid("json");
 
@@ -157,35 +168,35 @@ const genres = new Hono<{
         where: { id },
         data: {
           name,
-          slug
-        }
-      })
+          slug,
+        },
+      });
 
-      return c.json(updatedGenre)
-  }
-)
-
-.delete(
-  "/:id",
-  verifyAuth(),
-  zValidator("param", DeleteGenreParams),
-  async (c) => {
-    const { session } = c.get("authUser");
-    const { id } = c.req.valid("param");
-
-    if (session.user.role === "USER") {
-      throw new AuthorizationError("You dont have access to this resource");
+      return c.json(updatedGenre);
     }
+  )
 
-    const genre = await prisma.genre.findUnique({ where: { id } });
-    if (!genre) {
-      throw new InvariantError("Genre not found");
+  .delete(
+    "/:id",
+    verifyAuth(),
+    zValidator("param", DeleteGenreParams),
+    async (c) => {
+      const { session } = c.get("authUser");
+      const { id } = c.req.valid("param");
+
+      if (session.user.role === "USER") {
+        throw new AuthorizationError("You dont have access to this resource");
+      }
+
+      const genre = await prisma.genre.findUnique({ where: { id } });
+      if (!genre) {
+        throw new InvariantError("Genre not found");
+      }
+
+      const deletedSerie = await prisma.genre.delete({ where: { id } });
+
+      return c.json(deletedSerie);
     }
+  );
 
-    const deletedSerie = await prisma.genre.delete({ where: { id } });
-
-    return c.json(deletedSerie);
-  }
-);
-
-export default genres
+export default genres;

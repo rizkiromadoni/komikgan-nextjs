@@ -25,6 +25,24 @@ export const useGetGenres = (args: {
   });
 };
 
+export const useGetSingleGenre = (args: {
+  slug: string
+}) => {
+  return useQuery({
+    queryKey: ["genres", {...args}],
+    queryFn: async () => {
+      const response = await api.genres.get.$get({
+        query: {
+          slug: args.slug
+        }
+      })
+
+      return await response.json();
+    },
+    staleTime: Infinity,
+  });
+};
+
 export const useGetAllGenres = () => {
   return useQuery({
     queryKey: ["genres"],

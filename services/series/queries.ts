@@ -13,6 +13,7 @@ type GetSeriesProps = {
     limit?: number
     page?: number
     search?: string
+    genre?: string
 }
 
 export const useGetSeries = (args: GetSeriesProps) => {
@@ -32,7 +33,8 @@ export const useGetSeries = (args: GetSeriesProps) => {
                     sort: args.sort,
                     limit: limit,
                     page: page,
-                    search: args.search
+                    search: args.search,
+                    genre: args.genre
                 }
             })
 
