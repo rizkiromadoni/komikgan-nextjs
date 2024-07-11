@@ -70,7 +70,7 @@ export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
 
             return await response.json()
         },
-        staleTime: Infinity
+        staleTime: Infinity,
     })
 
     return query

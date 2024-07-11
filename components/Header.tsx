@@ -9,6 +9,7 @@ import {
   Settings,
   User,
   UserPlus,
+  Users,
   Webhook,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -142,18 +143,18 @@ const Header = () => {
                               href="/admin"
                               className="text-left w-28 hover:bg-[#45475a] flex items-center px-[10px] py-[7px] rounded-md text-[13px] text-[#9ca9b9] font-semibold tracking-wide"
                             >
-                              <User className="mr-3" />
+                              <Users className="mr-3" />
                               Panel
                             </a>
                           </li>
                         )}
                         <li className="m-[7px]">
                           <a
-                            href="/settings"
+                            href="/profile"
                             className="text-left w-28 hover:bg-[#45475a] flex items-center px-[10px] py-[7px] rounded-md text-[13px] text-[#9ca9b9] font-semibold tracking-wide"
                           >
-                            <Settings className="mr-3" />
-                            Settings
+                            <User className="mr-3" />
+                            Profile
                           </a>
                         </li>
                         <li className="m-[7px]">
