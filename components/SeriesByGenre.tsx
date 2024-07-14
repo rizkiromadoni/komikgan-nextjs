@@ -2,7 +2,7 @@
 
 import { useGetSingleGenre } from "@/services/genres/queries";
 import { useGetSeries } from "@/services/series/queries";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import SeriesList from "./SeriesList";
 import SeriesPagination from "./SeriesPagination";
@@ -28,11 +28,7 @@ const SeriesByGenre = ({ slug }: { slug: string }) => {
   });
 
   if (!genrePending && !genre) {
-    return (
-      <div className="w-full flex justify-center items-center">
-        Genre Not Found
-      </div>
-    );
+    return notFound()
   }
 
   return (

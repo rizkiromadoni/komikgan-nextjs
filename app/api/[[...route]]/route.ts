@@ -7,12 +7,13 @@ import { authConfig } from '@/auth'
 import series from '@/server/api/series'
 import genres from '@/server/api/genres'
 import chapters from '@/server/api/chapters'
+import profile from '@/server/api/profile'
 
 const app = new Hono().basePath('/api')
 app.use("*", initAuthConfig(() => authConfig as AuthConfig))
 app.use("/auth/*", authHandler())
 
-const routes = app.route("/users", users).route("/series", series).route("/genres", genres).route("/chapters", chapters)
+const routes = app.route("/users", users).route("/series", series).route("/genres", genres).route("/chapters", chapters).route("/profile", profile)
 
 app.onError((error, c) => {
     console.log(error)

@@ -58,7 +58,7 @@ const SeriesList = ({
               {serie.chapters.map((chapter) => (
                 <li className="flex justify-between" key={chapter.id}>
                   <Link
-                    href="#"
+                    href={`/${chapter.slug}`}
                     className="px-4 py-1 text-[15px] text-[#eeeeee] bg-[#3b3c4c] rounded-full hover:bg-[#3453d1] hover:text-[#ffffff] transition-colors"
                   >
                     Chapter {chapter.chapterNumber}

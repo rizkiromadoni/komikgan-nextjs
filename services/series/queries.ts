@@ -44,7 +44,7 @@ export const useGetSeries = (args: GetSeriesProps) => {
 
             return await response.json()
         },
-        staleTime: Infinity
+        retry: false
     })
 }
 
@@ -70,7 +70,7 @@ export const useGetSingleSeries = (queryParams: GetSingleSerieProps) => {
 
             return await response.json()
         },
-        staleTime: Infinity,
+        retry: false
     })
 
     return query
@@ -85,7 +85,6 @@ export const useGetAllSeries = () => {
                 throw new Error("Failed to get series")
             }
             return await response.json()
-        },
-        staleTime: Infinity
+        }
     })
 }

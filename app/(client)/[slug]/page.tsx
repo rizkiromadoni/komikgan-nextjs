@@ -4,17 +4,31 @@ import api from "@/lib/api";
 import { cn, formatDate } from "@/lib/utils";
 import { useGetSingleChapter } from "@/services/chapters/queries";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, BookOpen, List, X } from "lucide-react";
+import { DiscussionEmbed } from "disqus-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  List,
+  MessageCircle,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { useState } from "react";
 
 const SingleChapterPage = ({ params }: { params: { slug: string } }) => {
   const [open, setOpen] = useState(false);
 
-  const { data: chapter, isPending: chapterPending, status } = useGetSingleChapter({
+  const {
+    data: chapter,
+    isPending: chapterPending,
+    status,
+  } = useGetSingleChapter({
     slug: params.slug,
   });
+
   const { data: serie, isPending: seriesPending } = useQuery({
     queryKey: ["series", { id: chapter?.serieId }],
     queryFn: async () => {
@@ -26,9 +40,12 @@ const SingleChapterPage = ({ params }: { params: { slug: string } }) => {
     enabled: !!chapter?.serieId,
   });
 
-  if (status === "error") {
-    return <div>Chapter Not Found</div>
+  if (!chapterPending && !chapter) {
+    return notFound();
   }
+  // if (status === "error") {
+  //   return notFound()
+  // }
 
   if (chapterPending || seriesPending) {
     return <div>Loading...</div>;
@@ -153,6 +170,21 @@ const SingleChapterPage = ({ params }: { params: { slug: string } }) => {
             </Link>
           )}
         </div>
+      </div>
+
+      <div className="flex flex-col gap-2 my-5">
+        <h2 className="w-full py-4 text-2xl font-semibold text-left flex gap-2 items-center">
+          <MessageCircle fill="#6e6dfb" color="#6e6dfb" /> Comments
+        </h2>
+        <DiscussionEmbed
+          shortname="komikgan-1"
+          config={{
+            url: `https://eeae-104-28-251-244.ngrok-free.app/series/${chapter?.slug}`,
+            identifier: chapter?.slug,
+            title: chapter?.title,
+            language: "id_ID",
+          }}
+        />
       </div>
 
       <div

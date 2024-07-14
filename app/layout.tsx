@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   description: "Baca Komik Bahasa Indonesia",
 };
 
+export const revalidate = 0
+
 export default function RootLayout({
   children,
 }: Readonly<{

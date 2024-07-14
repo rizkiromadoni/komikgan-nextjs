@@ -58,12 +58,14 @@ export const useGetSingleChapter = (args: GetSingleChapterProps) => {
             })
 
             if (!response.ok) {
+                throw new Error("Failed to get chapter")
                 const { message } = await response.json() as any
                 throw new Error(message)
             }
 
             return await response.json()
         },
+        retry: false,
         staleTime: Infinity
     })
 }

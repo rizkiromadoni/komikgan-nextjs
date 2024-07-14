@@ -7,6 +7,7 @@ import { BookOpen, Heart, MessageCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from '@/lib/utils';
+import { notFound } from 'next/navigation';
 
 const SingleSeriesPage = ({ params }: { params: { slug: string } }) => {
   const { data, isPending } = useGetSingleSeries({ slug: params.slug });
@@ -16,7 +17,7 @@ const SingleSeriesPage = ({ params }: { params: { slug: string } }) => {
   }
 
   if (!data) {
-    return <div>Not Found</div>;
+    return notFound()
   }
 
   return (

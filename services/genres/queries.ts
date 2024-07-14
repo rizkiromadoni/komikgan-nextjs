@@ -40,6 +40,7 @@ export const useGetSingleGenre = (args: {
       return await response.json();
     },
     staleTime: Infinity,
+    retry: false
   });
 };
 
