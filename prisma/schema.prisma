@@ -38,6 +38,7 @@ model User {
   role     Role      @default(USER)
   series   Serie[]
   chapters Chapter[]
+  bookmarks Bookmark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,6 +64,7 @@ model Serie {
   user     User      @relation(fields: [userId], references: [id])
   genres   Genre[]
   chapters Chapter[]
+  bookmarks Bookmark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,4 +96,13 @@ model Chapter {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Bookmark {
+  id        Int    @id @default(autoincrement())
+  serieId   Int
+  userid    String
+
+  serie     Serie  @relation(fields: [serieId], references: [id])
+  user      User   @relation(fields: [userid], references: [id])
 }

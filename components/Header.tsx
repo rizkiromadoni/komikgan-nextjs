@@ -16,6 +16,7 @@ import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const routes = [
   {
@@ -27,7 +28,7 @@ const routes = [
     label: "Genre List",
   },
   {
-    url: "#",
+    url: "/bookmarks",
     label: "Bookmarks",
   },
 ];
@@ -37,6 +38,12 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const router = useRouter()
+
+  const handleSearch = (str: string) => {
+    if (str.length < 1) return
+    router.push(`/search/${str}`)
+  }
 
   return (
     <>
@@ -83,12 +90,19 @@ const Header = () => {
             </button>
             <div className="hidden md:flex h-full items-center">
               <input
-                type="text"
+                type="search"
                 name="search"
                 id="search"
                 className="py-2 px-4 bg-[#2f303e] rounded-sm outline-none text-sm font-extralight text-[#aaaaaa] focus:ring-1 focus:ring-gray-600 placeholder:text-[#7b7b7b]"
                 placeholder="Search..."
                 autoComplete="off"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleSearch(e.currentTarget.value)
+                  }
+                }}
               />
             </div>
             <div className="h-full px-[12px] cursor-pointer flex items-center relative lg:pr-0">

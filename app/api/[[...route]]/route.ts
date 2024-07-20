@@ -8,12 +8,19 @@ import series from '@/server/api/series'
 import genres from '@/server/api/genres'
 import chapters from '@/server/api/chapters'
 import profile from '@/server/api/profile'
+import bookmarks from '@/server/api/bookmarks'
 
 const app = new Hono().basePath('/api')
 app.use("*", initAuthConfig(() => authConfig as AuthConfig))
 app.use("/auth/*", authHandler())
 
-const routes = app.route("/users", users).route("/series", series).route("/genres", genres).route("/chapters", chapters).route("/profile", profile)
+const routes = app
+.route("/users", users)
+.route("/series", series)
+.route("/genres", genres)
+.route("/chapters", chapters)
+.route("/profile", profile)
+.route("/bookmarks", bookmarks)
 
 app.onError((error, c) => {
     console.log(error)

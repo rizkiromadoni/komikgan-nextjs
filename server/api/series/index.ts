@@ -65,6 +65,11 @@ const series = new Hono<{
             createdAt: true,
             updatedAt: true
           }
+        },
+        _count: {
+          select: {
+            bookmarks: true
+          }
         }
       },
     });

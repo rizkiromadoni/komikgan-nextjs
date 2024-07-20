@@ -189,7 +189,7 @@ const SingleChapterPage = ({ params }: { params: { slug: string } }) => {
 
       <div
         className={cn(
-          "absolute left-0 top-0 h-screen w-72 bg-[#3b3c4c] z-20 shadow-xl shadow-gray-800 transition",
+          "fixed left-0 top-0 h-screen w-72 bg-[#3b3c4c] z-20 shadow-xl shadow-gray-800 transition",
           { "-translate-x-full": !open }
         )}
       >
@@ -202,7 +202,7 @@ const SingleChapterPage = ({ params }: { params: { slug: string } }) => {
             <X size={20} strokeWidth={6} />
           </button>
         </div>
-        <ul className="flex flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[#6e6dfb] scrollbar-track-[#3b3c4c] pr-1">
+        <ul className="flex flex-col gap-1 h-[94%] overflow-y-auto scrollbar-thin scrollbar-thumb-[#6e6dfb] scrollbar-track-[#3b3c4c] pr-1">
           {serie?.chapters.map((chapter) => (
             <Link href={`/${chapter.slug}`} key={chapter.id}>
               <li

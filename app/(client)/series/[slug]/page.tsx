@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from '@/lib/utils';
 import { notFound } from 'next/navigation';
+import BookmarkButton from '@/components/ui/BookmarkButton';
 
 const SingleSeriesPage = ({ params }: { params: { slug: string } }) => {
   const { data, isPending } = useGetSingleSeries({ slug: params.slug });
@@ -55,12 +56,9 @@ const SingleSeriesPage = ({ params }: { params: { slug: string } }) => {
               <Star fill="#ffdd73" color="#ffdd73" size={18} />
               {data?.rating}
             </div>
-            <Button className="bg-[#c15656] rounded-full flex items-center justify-center py-2 font-semibold text-md gap-2 hover:bg-[#ff5a5a]">
-              <Heart fill="#ffffff" color="#ffffff" size={18} />
-              Bookmark
-            </Button>
+            <BookmarkButton serieId={data?.id} />
             <div className="flex justify-center text-[#9ca9b9] text-sm">
-              <p>0 Users Bookmarked</p>
+              <p>{data?._count.bookmarks} Users Bookmarked</p>
             </div>
             <ul className="bg-[#3b3c4c] text-[#9ca9b9] p-5 rounded-md flex flex-col gap-2">
               <li className="flex flex-col gap-2">
@@ -113,7 +111,7 @@ const SingleSeriesPage = ({ params }: { params: { slug: string } }) => {
             </h2>
             <ul className="flex flex-col max-h-[596px] gap-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[#6e6dfb] scrollbar-track-[#3b3c4c] pr-1">
               {data?.chapters.length > 0 ? 
-                data?.chapters.map((chapter) => (
+                data?.chapters.reverse().map((chapter) => (
                   <Link href={`/${chapter.slug}`} key={chapter.id}>
                   <li className="bg-[#3b3c4c] text-[#9ca9b9] rounded-md flex gap-2 p-1 hover:bg-[#6e6dfb] hover:text-white group">
                     <div className="p-3 bg-[#48495b] rounded-lg group-hover:bg-[#605fe0]">
